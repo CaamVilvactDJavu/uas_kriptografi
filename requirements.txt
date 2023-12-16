@@ -1,0 +1,6 @@
+numpy
+bitstring==4.0.0
+opencv-python
+matplotlib
+pycryptodome
+pycrypto
