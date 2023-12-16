@@ -90,15 +90,27 @@ class DCT():
 
         sorted_coefficients = [zz.zigzag(block) for block in dct_quants]
 
+        if len(sorted_coefficients) < 32:
+            raise ValueError("Data yang tersedia tidak cukup untuk didekode.")
+
         recovered_data = stego.extract_encoded_data_from_DCT(
             sorted_coefficients)
 
-        data_len = int(recovered_data.read('uint:32') / 8)
-        print("Data length", data_len)
+        data_len_bits = recovered_data.read('uint:32')
+
+        if len(recovered_data) < data_len_bits:
+            raise ValueError("Data yang tersedia tidak cukup untuk didekode.")
+
+        data_len = int(data_len_bits / 8)
 
         extracted_data = bytes()
         for _ in range(data_len):
-            extracted_data += struct.pack('>B', recovered_data.read('uint:8'))
+            if len(recovered_data) > 0:
+                extracted_data += struct.pack('>B',
+                                              recovered_data.read('uint:8'))
+            else:
+                raise ValueError(
+                    "Data yang tersedia tidak cukup untuk di dekode.")
 
         print(extracted_data.decode('ascii'))
 
@@ -175,15 +187,15 @@ while True:
 
     if m == "2":
 
-        STEGANO_PATH = input("Masukkan Gambar, contoh : baboon.png -> ")
+        STEGANO_PATH = input("Masukkan Gambar, contoh : hasil_encode.png -> ")
         hasil_decode = DCT().decoding(STEGANO_PATH)
         ciphertext = hasil_decode
         kunci_dekrip = input('Masukkan Kunci -> ')
         pesan = AESCipher(kunci_dekrip).decrypt(ciphertext).decode('utf-8')
-        print('Pesan -> ', pesan)
+        print('Pesan ->', pesan)
 
         hash_pesan = hashlib.sha256(pesan.encode())
-        print("Hasil Hash Pesan -> ", hash_pesan.hexdigest())
+        print("Hasil Hash Pesan ->", hash_pesan.hexdigest())
 
         print("\n++++++++++++++++++++++++++ Sukses Melakukan Decode Image ++++++++++++++++++++++++++")
 
