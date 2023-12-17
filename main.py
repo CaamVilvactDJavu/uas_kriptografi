@@ -2,7 +2,6 @@
 import cv2
 import struct
 import bitstring
-import math
 import numpy as np
 import zigzag as zz
 import ImageProcessing as img
@@ -11,12 +10,11 @@ import matplotlib.pyplot as plt
 import hashlib
 from math import log10, sqrt
 from hashlib import md5
-from base64 import b64decode
-from base64 import b64encode
+from base64 import b64decode, b64encode
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad, unpad
-
+import time  # Import modul time untuk mengukur waktu
 
 # Membuat class DCT untuk proses encoding dan decoding menggunakan Transformasi Kosinus Diskret (DCT)
 class DCT():
@@ -26,6 +24,9 @@ class DCT():
         self.COVER_IMAGE_FILEPATH = COVER_IMAGE_FILEPATH
         self.STEGO_IMAGE_FILEPATH = STEGO_IMAGE_FILEPATH
         self.SECRET_MESSAGE_STRING = SECRET_MESSAGE_STRING
+
+        start_time = time.time()  # Catat waktu awal enkripsi
+
 
         NUM_CHANNELS = 3
         raw_cover_image = cv2.imread(
@@ -78,9 +79,15 @@ class DCT():
 
         cv2.imwrite(STEGO_IMAGE_FILEPATH, final_stego_image)
 
+        nd_time = time.time()  # Catat waktu akhir enkripsi
+        elapsed_time = nd_time - start_time
+        print(f"Encryption Time: {elapsed_time} seconds")
+
     # Metode decoding untuk mengekstrak pesan dari gambar tersembunyi
     def decoding(self, hasil_stego):
         self.hasil_stego = hasil_stego
+
+        start_time_decryption = time.time()
 
         stego_image = cv2.imread(hasil_stego, flags=cv2.IMREAD_COLOR)
         stego_image_f32 = np.float32(stego_image)
@@ -117,6 +124,10 @@ class DCT():
                     "Data yang tersedia tidak cukup untuk di dekode.")
 
         print(extracted_data.decode('ascii'))
+        
+        end_time_decryption = time.time()
+        elapsed_time_decryption = end_time_decryption - start_time_decryption
+        print(f"Decryption Time: {elapsed_time_decryption} seconds")
 
         message = extracted_data.decode('ascii')
 
