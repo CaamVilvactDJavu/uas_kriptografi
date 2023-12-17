@@ -1,6 +1,8 @@
+# Mengimpor library yang diperlukan
 import numpy as np
 
 
+# Berfungsi untuk melakukan pemindaian Zigzag pada array 2D
 def zigzag(input):
     h = 0
     v = 0
@@ -13,6 +15,7 @@ def zigzag(input):
 
     i = 0
 
+    # Buat array kosong untuk menyimpan nilai pada pemindaian zigzag
     output = np.zeros((vmax * hmax))
 
     while ((v < vmax) and (h < hmax)):
@@ -70,6 +73,7 @@ def zigzag(input):
     return output
 
 
+# Berfungsi untuk melakukan pemindaian Zigzag terbalik dan merekonstruksi array 2D asli
 def inverse_zigzag(input, vmax, hmax):
 
     h = 0
@@ -78,6 +82,7 @@ def inverse_zigzag(input, vmax, hmax):
     vmin = 0
     hmin = 0
 
+    # Buat array 2D kosong untuk menyimpan nilai yang direkonstruksi
     output = np.zeros((vmax, hmax))
 
     i = 0
